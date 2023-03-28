@@ -38,7 +38,7 @@ vector<vector<int> > standard(vector<vector<int> >& M1, vector<vector<int> >& M2
 
 // modified strassen's
 vector<vector<int> > strassens(vector<vector<int> >& M1, vector<vector<int> >& M2, int n, int cp) {
-    
+
     if (n <= cp) {
         return standard(M1, M2, n);
     } 
@@ -70,7 +70,7 @@ vector<vector<int> > strassens(vector<vector<int> >& M1, vector<vector<int> >& M
 
     for (int i = 0; i < n/2; i++) {
         for (int j = 0; j < n/2; j++) {
-            sub2[i][j] = M2[i][j+n/2]+M2[i+n/2][j+n/2];
+            sub2[i][j] = M2[i][j+n/2]-M2[i+n/2][j+n/2];
         }
     }
 
@@ -195,37 +195,80 @@ vector<vector<int> > strassens(vector<vector<int> >& M1, vector<vector<int> >& M
 
 }
 
-void test_strassens(int n) {
+int main(int argc, char *argv[]) {
 
-    // generate random matrix
+    if (argc != 4) {
+        std::cout << "Usage: ./strassen 0 dimension inputfile\n";
+        return 0;
+    }
+
+    int n = atoi(argv[2]);
+    int cp = 37;
+
+    // take in input matrix
     vector<vector<int> > M1(n, vector<int>(n,0));
     vector<vector<int> > M2(n, vector<int>(n,0));
 
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            int rand1 = rand() % static_cast<int>(3);
-            int rand2 = rand() % static_cast<int>(3);
 
-            M1[i][j] = rand1;
-            M2[i][j] = rand2;
+    if (atoi(argv[1]) == 1) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int rand1 = rand() % static_cast<int>(3);
+                int rand2 = rand() % static_cast<int>(3);
+
+                M1[i][j] = rand1;
+                M2[i][j] = rand2;
+            }
         }
+    } else if (atoi(argv[1]) == 0) {
+        ifstream testfile(argv[3]);
+        string line;
+
+        int i = 0;
+        int a, b;
+        while (getline(testfile, line)) {
+        
+            if (i < n*n) {
+                a = i / n;
+                b = i % n;
+                M1[a][b] = stoi(line);
+                i++;
+            } else {
+                a = (i / n) - n;
+                b = i % n;
+                M2[a][b] = stoi(line);
+                i++;
+            }
+        }
+
+        testfile.close();
     }
 
+    // test standard multiplication
     auto start_time1 = std::chrono::high_resolution_clock::now();
 
     vector<vector<int> > ans1 = standard(M1,M2,n);
 
-    auto end_time1= std::chrono::high_resolution_clock::now();
-    auto duration1 = std::chrono::duration_cast<std::chrono::milliseconds>(end_time1 - start_time1);
+    for (int i = 0; i < n; i++) {
+        cout << ans1[i][i] << std::endl;
+    }
 
+    auto end_time1= std::chrono::high_resolution_clock::now();
+    auto duration1 = std::chrono::duration_cast<std::chrono::microseconds>(end_time1 - start_time1);
+
+    // test modified strassen's
     auto start_time2 = std::chrono::high_resolution_clock::now();
 
-    vector<vector<int> > ans2 = strassens(M1,M2,n,2);
-
-    auto end_time2= std::chrono::high_resolution_clock::now();
-    auto duration2 = std::chrono::duration_cast<std::chrono::milliseconds>(end_time2 - start_time2);
+    vector<vector<int> > ans2 = strassens(M1,M2,n,cp);
 
     for (int i = 0; i < n; i++) {
+        cout << ans1[i][i] << std::endl;
+    }
+
+    auto end_time2= std::chrono::high_resolution_clock::now();
+    auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(end_time2 - start_time2);
+
+    /*for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             cout << M1[i][j] << " ";
         }
@@ -248,29 +291,19 @@ void test_strassens(int n) {
             cout << ans1[i][j] << " ";
         }
         cout << std::endl;
-    }
+    }*/
 
-    std::cout << "Elapsed time: " << duration1.count() << " milliseconds\n";
+    std::cout << "Elapsed time: " << duration1.count() << " microseconds\n";
 
-    cout << std::endl;
+    /*cout << std::endl;
 
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             cout << ans2[i][j] << " ";
         }
         cout << std::endl;
-    }
+    }*/
 
-    std::cout << "Elapsed time: " << duration2.count() << " milliseconds\n";
-
-}
-
-
-int main(int argc, char *argv[]) {
-
-    int n = atoi(argv[1]);
-
-    // test stuff
-    test_strassens(n);
+    std::cout << "Elapsed time: " << duration2.count() << " microseconds\n";
 
 }
