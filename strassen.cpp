@@ -19,13 +19,11 @@ vector<vector<int> > standard(vector<vector<int> >& M1, vector<vector<int> >& M2
     int entry;
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
-            
             entry = 0;
             for (int k = 0; k < n; k++) {
                 entry += M1[i][k] * M2[k][j];
             }
             ans[i][j] = entry;
-
         }
     }
 
@@ -204,7 +202,7 @@ void count_triangles() {
     // generate graph with 1024 vertices
     vector<vector<int> > A(1024, vector<int>(1024,0));
 
-    double p = 0.05;
+    double p = 0.01;
 
     // loop through all pairs of vertices
     for (int i = 0; i < 1024; i++) {
@@ -218,9 +216,10 @@ void count_triangles() {
         }
     }
 
-    int cp = 37;
-    vector<vector<int> > A_squared = strassens(A, A, 1024, 37);
-    vector<vector<int> > A_cubed = strassens(A, A_squared, 1024, 37);
+    int cp = 16;
+
+    vector<vector<int> > A_squared = strassens(A, A, 1024, cp);
+    vector<vector<int> > A_cubed = strassens(A, A_squared, 1024, cp);
 
     double num_triangles = 0;
     for (int i = 0; i < 1024; i++) {
@@ -237,21 +236,20 @@ int main(int argc, char *argv[]) {
 
     //count_triangles();
 
-
     if (argc != 4) {
         std::cout << "Usage: ./strassen 0 dimension inputfile\n";
         return 0;
     }
 
     int n = atoi(argv[2]);
-    int cp = 37;
+    int cp = 16;
 
     // take in input matrix
     vector<vector<int> > M1(n, vector<int>(n,0));
     vector<vector<int> > M2(n, vector<int>(n,0));
 
 
-    if (atoi(argv[1]) == 1) {
+    if (atoi(argv[1]) != 0) {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 int rand1 = rand() % static_cast<int>(3);
@@ -286,66 +284,32 @@ int main(int argc, char *argv[]) {
     }
 
     // test standard multiplication
-    /*auto start_time1 = std::chrono::high_resolution_clock::now();
+    auto start_time1 = std::chrono::high_resolution_clock::now();
 
     vector<vector<int> > ans1 = standard(M1,M2,n);
 
-    for (int i = 0; i < n; i++) {
+    /*for (int i = 0; i < n; i++) {
         cout << ans1[i][i] << std::endl;
-    }
+    }*/
 
     auto end_time1= std::chrono::high_resolution_clock::now();
-    auto duration1 = std::chrono::duration_cast<std::chrono::microseconds>(end_time1 - start_time1);*/
+    auto duration1 = std::chrono::duration_cast<std::chrono::microseconds>(end_time1 - start_time1);
+
+    // std::cout << "Standard elapsed time: " << duration1.count() << " microseconds\n";
 
     // test modified strassen's
-    // auto start_time2 = std::chrono::high_resolution_clock::now();
-
+    auto start_time2 = std::chrono::high_resolution_clock::now();
+    
     vector<vector<int> > ans2 = strassens(M1,M2,n,cp);
 
     for (int i = 0; i < n; i++) {
         cout << ans2[i][i] << std::endl;
     }
 
-    // auto end_time2= std::chrono::high_resolution_clock::now();
-    // auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(end_time2 - start_time2);
-
-    /*for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cout << M1[i][j] << " ";
-        }
-        cout << std::endl;
-    }
-
-    cout << std::endl;
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cout << M2[i][j] << " ";
-        }
-        cout << std::endl;
-    }
-
-    cout << std::endl;
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cout << ans1[i][j] << " ";
-        }
-        cout << std::endl;
-    }*/
-
-    //std::cout << "Elapsed time: " << duration1.count() << " microseconds\n";
-
-    /*cout << std::endl;
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cout << ans2[i][j] << " ";
-        }
-        cout << std::endl;
-    }*/
-
-    //std::cout << "Elapsed time: " << duration2.count() << " microseconds\n"; 
+    auto end_time2= std::chrono::high_resolution_clock::now();
+    auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(end_time2 - start_time2);
+    // std::cout << "Strassen's elapsed time: " << duration2.count() << " microseconds\n"; 
     
 
+    
 }
