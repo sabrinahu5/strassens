@@ -235,9 +235,9 @@ void count_triangles() {
 
 int main(int argc, char *argv[]) {
 
-    count_triangles();
+    //count_triangles();
 
-    /*
+
     if (argc != 4) {
         std::cout << "Usage: ./strassen 0 dimension inputfile\n";
         return 0;
@@ -286,7 +286,7 @@ int main(int argc, char *argv[]) {
     }
 
     // test standard multiplication
-    auto start_time1 = std::chrono::high_resolution_clock::now();
+    /*auto start_time1 = std::chrono::high_resolution_clock::now();
 
     vector<vector<int> > ans1 = standard(M1,M2,n);
 
@@ -295,19 +295,19 @@ int main(int argc, char *argv[]) {
     }
 
     auto end_time1= std::chrono::high_resolution_clock::now();
-    auto duration1 = std::chrono::duration_cast<std::chrono::microseconds>(end_time1 - start_time1);
+    auto duration1 = std::chrono::duration_cast<std::chrono::microseconds>(end_time1 - start_time1);*/
 
     // test modified strassen's
-    auto start_time2 = std::chrono::high_resolution_clock::now();
+    // auto start_time2 = std::chrono::high_resolution_clock::now();
 
     vector<vector<int> > ans2 = strassens(M1,M2,n,cp);
 
     for (int i = 0; i < n; i++) {
-        cout << ans1[i][i] << std::endl;
+        cout << ans2[i][i] << std::endl;
     }
 
-    auto end_time2= std::chrono::high_resolution_clock::now();
-    auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(end_time2 - start_time2);*/
+    // auto end_time2= std::chrono::high_resolution_clock::now();
+    // auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(end_time2 - start_time2);
 
     /*for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
