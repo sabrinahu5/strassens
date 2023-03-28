@@ -195,8 +195,49 @@ vector<vector<int> > strassens(vector<vector<int> >& M1, vector<vector<int> >& M
 
 }
 
+void count_triangles() {
+
+    srand(time(0));
+
+    // p = 0.01, 0.02, 0.03, 0.04, 0.05
+
+    // generate graph with 1024 vertices
+    vector<vector<int> > A(1024, vector<int>(1024,0));
+
+    double p = 0.05;
+
+    // loop through all pairs of vertices
+    for (int i = 0; i < 1024; i++) {
+        for (int j = i+1; j < 1024; j++) {
+            double rand_num = (double) rand() / RAND_MAX; // generate a random number between 0 and 1
+
+            if (rand_num <= p) { // if the random number is less than or equal to the probability
+                A[i][j] = 1; // set the adjacency matrix entry to 1
+                A[j][i] = 1; // since the graph is undirected, set the symmetric entry to 1 as well
+            }
+        }
+    }
+
+    int cp = 37;
+    vector<vector<int> > A_squared = strassens(A, A, 1024, 37);
+    vector<vector<int> > A_cubed = strassens(A, A_squared, 1024, 37);
+
+    double num_triangles = 0;
+    for (int i = 0; i < 1024; i++) {
+        num_triangles += (double) A_cubed[i][i];
+    }
+    num_triangles = num_triangles / 6;
+
+    cout << "Num triangles, p = " << p << ": " << num_triangles << std::endl;
+
+}
+
+
 int main(int argc, char *argv[]) {
 
+    count_triangles();
+
+    /*
     if (argc != 4) {
         std::cout << "Usage: ./strassen 0 dimension inputfile\n";
         return 0;
@@ -266,7 +307,7 @@ int main(int argc, char *argv[]) {
     }
 
     auto end_time2= std::chrono::high_resolution_clock::now();
-    auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(end_time2 - start_time2);
+    auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(end_time2 - start_time2);*/
 
     /*for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
@@ -293,7 +334,7 @@ int main(int argc, char *argv[]) {
         cout << std::endl;
     }*/
 
-    std::cout << "Elapsed time: " << duration1.count() << " microseconds\n";
+    //std::cout << "Elapsed time: " << duration1.count() << " microseconds\n";
 
     /*cout << std::endl;
 
@@ -304,6 +345,7 @@ int main(int argc, char *argv[]) {
         cout << std::endl;
     }*/
 
-    std::cout << "Elapsed time: " << duration2.count() << " microseconds\n";
+    //std::cout << "Elapsed time: " << duration2.count() << " microseconds\n"; 
+    
 
 }
